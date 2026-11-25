@@ -28,7 +28,7 @@ LEADS = [
     dict(region="na", place="NEW YORK, US", field="COURTS", tag="CONFIRMED",
          lon=-73.95, lat=40.65, pic="verdict", big="10 OF 12", small="COUNTS GUILTY",
          head="US jury convicts Huawei of stealing trade secrets",
-         dek="Bank fraud, trade-secret theft; not racketeering.",
+         dek="Tuesday's verdict in the case first filed in 2018.",
          src="The Guardian · AP · Reuters"),
     dict(region="eu", place="ZAPORIZHZHIA, UKRAINE", field="WAR", tag="CONFIRMED",
          lon=35.14, lat=47.84, pic="apartment", big="2 KILLED", small="OVER 40 HURT",
@@ -39,7 +39,7 @@ LEADS = [
 
 # Eight drawn cards. The brief is the one-line form used if a variant drops the card into the list.
 CARDS = [
-    dict(region="na", place="SANTA CLARA, US", field="TECH", tag="CONFIRMED",
+    dict(region="na", place="CALIFORNIA, US", field="TECH", tag="CONFIRMED",
          lon=-121.95, lat=37.35, pic="chipdown", big="−6%", small="NVIDIA SHARES",
          head="Nvidia boss apologises to staff; shares slide",
          dek="Huang: “I made some terrible mistakes.”",
@@ -79,6 +79,17 @@ CARDS = [
          head="Bus hits a parked truck in the UAE, killing 13",
          dek="Police say 14 more are in hospital.",
          brief=("UAE", "bus crash kills 13"), src="Gulf News · The National"),
+    # drawn only when a variant shows 10 cards; otherwise these two fall back to the short list
+    dict(region="me", place="KIRKUK, IRAQ", field="ENERGY", tag="OFFICIAL",
+         lon=44.39, lat=35.47, pic="derrick", big="OIL", small="4 PROVINCES",
+         head="Baghdad orders takeover of Kurdish-run oilfields",
+         dek="PM al-Zaidi also seizes border posts.",
+         brief=("Iraq", "Baghdad seizes Kurdish oilfields"), src="Reuters"),
+    dict(region="ea", place="HANOI, VIETNAM", field="DISASTER", tag="CONFIRMED",
+         lon=105.85, lat=21.03, pic="blast", big="7 DEAD", small="GAS BLAST",
+         head="Gas blast wrecks a busy Hanoi restaurant",
+         dek="It went off at about 8am local time.",
+         brief=("Hanoi", "restaurant gas blast kills 7"), src="VnExpress · Al Jazeera"),
 ]
 
 # The short list: (region, place, line, tag, source).
@@ -89,7 +100,6 @@ BRIEFS = [
     ("eu", "Tennis", "Sinner has knee surgery", "OFFICIAL", "The Guardian"),
     ("eu", "UK", "2 held after royal home break-in", "OFFICIAL", "Norfolk Police"),
     ("eu", "Football", "Real Madrid beat PSV 5–1", "CONFIRMED", "AFP · The Guardian"),
-    ("me", "Iraq", "Baghdad seizes Kurdish oilfields", "OFFICIAL", "Reuters"),
     ("me", "Turkey", "army helicopter crash kills 5", "CONFIRMED", "AP · Al Jazeera"),
     ("me", "Ankara", "Libya's Haftar meets Erdogan", "CONFIRMED", "Al Jazeera"),
     ("af", "DR Congo", "rebels halt their advance", "OFFICIAL", "Al Jazeera · Anadolu"),
@@ -99,7 +109,6 @@ BRIEFS = [
     ("sa", "Bangladesh", "481 factories halted", "CONFIRMED", "TBS · Daily Star"),
     ("sa", "Cricket", "teen hits 204 off 53 balls", "CONFIRMED", "The Guardian · Al Jazeera"),
     ("sa", "Pakistan", "1st astronaut set to fly", "OFFICIAL", "CMSA · Al Jazeera"),
-    ("ea", "Hanoi", "restaurant gas blast kills 7", "CONFIRMED", "VnExpress · Al Jazeera"),
     ("ea", "Malaysia", "to deport 6,800 to Myanmar", "OFFICIAL", "Al Jazeera · Reuters"),
     ("ea", "China", "orders 50 Boeing 737 jets", "OFFICIAL", "Reuters"),
     ("oc", "Australia", "5% fines for tech giants", "OFFICIAL", "Al Jazeera · AAP"),
@@ -115,6 +124,17 @@ BRIEFS = [
     ("la", "Football", "Copa América 2028 to US", "OFFICIAL", "Conmebol · Concacaf"),
     ("gl", "UN", "5 women killed by kin every hour", "OFFICIAL", "UN Women"),
     ("gl", "Landmines", "casualties at 5-year high", "OFFICIAL", "Landmine Monitor"),
+]
+
+# "In numbers": short-list stories lifted into big type. A variant that shows the strip takes them out of the
+# short list, so each story still appears once. (number, what it counts, region, the brief it replaces)
+NUMBERS = [
+    ("204", "runs off 53 balls by India's Sooryavanshi, 15", "sa", "teen hits 204 off 53 balls"),
+    ("481", "garment factories halted in Bangladesh", "sa", "481 factories halted"),
+    ("6,800", "people Malaysia will send back to Myanmar", "ea", "to deport 6,800 to Myanmar"),
+    ("50", "Boeing 737s ordered by China's Xiamen Airlines", "ea", "orders 50 Boeing 737 jets"),
+    ("5%", "of global revenue: Australia's new tech fines", "oc", "5% fines for tech giants"),
+    ("349", "Russian fighters killed in Mali, leak shows", "af", "leak: 349 Russian fighters killed"),
 ]
 
 # The fields the stories cover (each one has at least one story on the page).

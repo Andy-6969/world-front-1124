@@ -12,7 +12,7 @@ from collections import Counter
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from pictures import DRAW  # noqa: E402
-from stories import BRIEFS, CARDS, DATE, FIELDS, LEADS, LEFT_OUT, REGIONS, TIMELINE  # noqa: E402
+from stories import BRIEFS, CARDS, DATE, FIELDS, LEADS, LEFT_OUT, NUMBERS, REGIONS, TIMELINE  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "out")
@@ -25,7 +25,7 @@ TAG_CLASS = {"CONFIRMED": "t-conf", "OFFICIAL": "t-off", "REPORTED": "t-rep", "C
 # layout knobs (a variant can override them through the VARIANT environment variable, as JSON)
 K = dict(lead_pic=90, card_pic=58, cards=8, card_cols=4, head_lead=24.5, head_card=19, brief_font=14.2,
          briefs=30, brief_cols=3, dek_lead=13.4, dek_card=13, sub_size=19,
-         date_size=76, map=1, map_w=200, map_h=172, brief_num=0)
+         date_size=76, map=1, map_w=200, map_h=172, brief_num=0, numbers=0, card_dek=1, place_font=13.2)
 K.update(json.loads(os.environ.get("VARIANT", "{}")))
 
 # What this variant shows: the first K['cards'] cards are drawn, the rest drop into the short list;
@@ -49,7 +49,9 @@ def spread(pool, n):
     return [b for i, b in enumerate(pool) if i in keep]
 
 
-SEL_BRIEFS = spread(DROPPED + list(BRIEFS), K["briefs"])
+SEL_NUMBERS = list(NUMBERS) if K["numbers"] else []
+LIFTED = {n[3] for n in SEL_NUMBERS}
+SEL_BRIEFS = spread(DROPPED + [b for b in BRIEFS if b[2] not in LIFTED], K["briefs"])
 for i, s in enumerate(SEL_LEADS + SEL_CARDS):
     s["n"] = i + 1
 
@@ -65,11 +67,12 @@ def tag(t):
 def counts():
     c = Counter(s["region"] for s in SEL_LEADS + SEL_CARDS)
     c.update(b[0] for b in SEL_BRIEFS)
+    c.update(n[2] for n in SEL_NUMBERS)
     return c
 
 
 def total():
-    return len(SEL_LEADS) + len(SEL_CARDS) + len(SEL_BRIEFS)
+    return len(SEL_LEADS) + len(SEL_CARDS) + len(SEL_BRIEFS) + len(SEL_NUMBERS)
 
 
 # ---------- map ----------
@@ -160,7 +163,7 @@ def card_html(s, width):
   <div class="meta"><span class="num" style="background:{col}">{s['n']}</span>
     <span class="place" style="color:{col}">{esc(s['place'])}</span>{tag(s['tag'])}</div>
   <h3>{esc(s['head'])}</h3>
-  <p class="dek">{esc(s['dek'])}</p>
+  {f'<p class="dek">{esc(s["dek"])}</p>' if K['card_dek'] else ''}
 </div>"""
 
 
@@ -171,6 +174,15 @@ def brief_html(n, b):
     num = f'<span class="bn" style="color:{col}">{n}</span>' if K["brief_num"] else ""
     return (f'<li>{num}<b style="color:{col}">{esc(place)}:</b> '
             f'{esc(text)}{mark}</li>')
+
+
+def numbers_strip():
+    """Short-list stories in big type: one number and what it counts, coloured by region."""
+    if not SEL_NUMBERS:
+        return ""
+    cells = "".join(f'<div class="nc"><b style="color:{REGIONS[r][1]}">{esc(n)}</b><span>{esc(what)}</span></div>'
+                    for n, what, r, _ in SEL_NUMBERS)
+    return f'<div class="nums"><span class="lab">IN<br>NUMBERS</span>{cells}</div>'
 
 
 def page():
@@ -215,6 +227,12 @@ html,body{{width:1024px;height:1024px;overflow:hidden;background:#f6f1e6;color:#
   display:flex;align-items:center;letter-spacing:.05em;white-space:nowrap}}
 .tl .ev{{flex:1;padding-left:9px;border-left:2px solid #ffd23f;margin-left:7px;white-space:nowrap}}
 .tl .ev b{{color:#ffd23f;font-family:Bahnschrift,Arial}}
+.nums{{margin:6px 16px 0;display:flex;align-items:stretch;border:1.5px solid #14213d;border-radius:3px;background:#fffdf7}}
+.nums .lab{{background:#14213d;color:#fff;font:700 11.5px/1.1 Bahnschrift,Arial;padding:4px 8px;display:flex;align-items:center;
+  letter-spacing:.05em;text-align:center}}
+.nc{{flex:1;padding:2px 6px;border-left:1px solid #d8cfba;display:flex;flex-direction:column;justify-content:center}}
+.nc b{{font:700 21px/1 Bahnschrift,Arial}}
+.nc span{{font-size:11.5px;line-height:1.15;color:#222}}
 .leads{{display:flex;gap:12px;margin:9px 16px 0}}
 .lead{{width:{lead_w}px}}
 .pic{{position:relative;overflow:hidden;border-radius:3px;border:1px solid #c9bfa8}}
@@ -228,7 +246,7 @@ html,body{{width:1024px;height:1024px;overflow:hidden;background:#f6f1e6;color:#
 .meta{{display:flex;align-items:center;gap:5px;margin-top:5px;white-space:nowrap}}
 .num{{color:#fff;font:700 12px Bahnschrift,Arial;min-width:18px;height:18px;border-radius:50%;display:inline-flex;
   align-items:center;justify-content:center}}
-.place{{font:700 13.2px Bahnschrift,Arial;letter-spacing:.02em;flex:1;overflow:hidden;text-overflow:ellipsis}}
+.place{{font:700 {K['place_font']}px Bahnschrift,Arial;letter-spacing:.02em;flex:1;overflow:hidden;text-overflow:ellipsis}}
 .tag{{font:700 10.5px Bahnschrift,Arial;letter-spacing:.05em;padding:1px 4px;border-radius:2px;border:1.2px solid}}
 .t-conf{{color:#166534;border-color:#166534;background:#ecfdf3}}
 .t-off{{color:#1e3a8a;border-color:#1e3a8a;background:#eef4ff}}
@@ -241,7 +259,8 @@ h3{{font:700 {K['head_card']}px/1.14 {SERIF};margin-top:3px;color:#111;font-vari
 .sec{{margin:9px 16px 0;border-top:2.5px solid #14213d;padding-top:3px;font:700 12px Bahnschrift,Arial;letter-spacing:.06em;
   color:#14213d}}
 .sec span{{font:400 11.5px "Segoe UI",Arial;color:#555;letter-spacing:0;margin-left:6px}}
-.cards{{display:grid;grid-template-columns:repeat({K['card_cols']},1fr);gap:8px 10px;margin:4px 16px 0}}
+.cards{{display:grid;grid-template-columns:repeat({K['card_cols']},minmax(0,1fr));gap:8px 10px;margin:4px 16px 0}}
+.card{{min-width:0}}
 .bottom{{display:flex;gap:14px;margin:9px 16px 0;border-top:2.5px solid #14213d;padding-top:5px}}
 .mapbox{{width:{K['map_w']}px;flex:none}}
 .mapbox h4,.also h4{{font:700 12.5px Bahnschrift,Arial;letter-spacing:.06em;color:#14213d;margin-bottom:3px}}
@@ -267,6 +286,7 @@ h3{{font:700 {K['head_card']}px/1.14 {SERIF};margin-top:3px;color:#111;font-vari
 <div class="sub">{esc(subtitle)}</div>
 <div class="band">{chips}</div>
 <div class="tl"><span class="lab">EAST → WEST</span>{tl}</div>
+{numbers_strip()}
 <div class="leads">{leads}</div>
 <div class="sec">THE DAY IN {len(SEL_CARDS)} MORE<span>Tuesday's other big stories, across {len({s['region'] for s in SEL_CARDS})} regions</span>
   <em class="key">{tag("CONFIRMED")} 2+ outlets {tag("OFFICIAL")} on the record {tag("REPORTED")} one outlet {tag("CLAIM")} one side's word</em></div>

@@ -205,5 +205,37 @@ def bus(w, h):
     return svg(w, h, road + truck + coach, "#f5e6c8")
 
 
+def derrick(w, h):
+    """An oil derrick and a storage tank on dry ground, a gas flare burning."""
+    body = (f'<rect y="{h * 0.82}" width="{w}" height="{h * 0.18}" fill="#c8a978"/>'
+            f'<path d="M{h * 0.2} {h * 0.82} L{h * 0.4} {h * 0.08} L{h * 0.6} {h * 0.82}" fill="none" stroke="{INK}" stroke-width="3"/>'
+            f'<path d="M{h * 0.27} {h * 0.56} L{h * 0.53} {h * 0.56} M{h * 0.32} {h * 0.34} L{h * 0.48} {h * 0.34} '
+            f'M{h * 0.27} {h * 0.56} L{h * 0.48} {h * 0.34} M{h * 0.53} {h * 0.56} L{h * 0.32} {h * 0.34}" '
+            f'stroke="{INK}" stroke-width="1.6"/>'
+            f'<rect x="{h * 0.72}" y="{h * 0.5}" width="{h * 0.42}" height="{h * 0.32}" rx="3" fill="#94a3b8"/>'
+            f'<rect x="{h * 0.72}" y="{h * 0.58}" width="{h * 0.42}" height="{h * 0.05}" fill="#64748b"/>'
+            f'<rect x="{h * 1.3}" y="{h * 0.3}" width="{h * 0.05}" height="{h * 0.52}" fill="#475569"/>'
+            f'<path d="M{h * 1.325} {h * 0.3} q{-h * 0.1} {-h * 0.12} 0 {-h * 0.26} q{h * 0.1} {h * 0.14} 0 {h * 0.26} Z" fill="{ORANGE}"/>')
+    return svg(w, h, body, "#f5e8cc")
+
+
+def blast(w, h):
+    """A ground-floor shopfront blown out under a block of flats, a burst of flame and debris."""
+    body = (f'<rect y="{h * 0.88}" width="{w}" height="{h * 0.12}" fill="#57534e"/>'
+            f'<rect x="{h * 0.12}" y="{h * 0.1}" width="{h * 0.9}" height="{h * 0.78}" fill="#d6d3d1"/>'
+            + "".join(f'<rect x="{h * (0.2 + c * 0.22)}" y="{h * (0.16 + r * 0.16)}" width="{h * 0.12}" height="{h * 0.09}" '
+                      f'fill="#64748b"/>' for r in range(3) for c in range(4))
+            + f'<rect x="{h * 0.12}" y="{h * 0.64}" width="{h * 0.9}" height="{h * 0.24}" fill="#292524"/>'
+            f'<path d="M{h * 0.57} {h * 0.5} l{h * 0.08} {h * 0.12} l{h * 0.14} -{h * 0.04} l-{h * 0.06} {h * 0.12} '
+            f'l{h * 0.14} {h * 0.08} l-{h * 0.16} {h * 0.02} l{h * 0.02} {h * 0.12} l-{h * 0.12} -{h * 0.08} '
+            f'l-{h * 0.12} {h * 0.08} l{h * 0.02} -{h * 0.12} l-{h * 0.16} -{h * 0.02} l{h * 0.14} -{h * 0.08} '
+            f'l-{h * 0.06} -{h * 0.12} l{h * 0.14} {h * 0.04} Z" fill="{ORANGE}"/>'
+            f'<circle cx="{h * 0.57}" cy="{h * 0.74}" r="{h * 0.07}" fill="{YELLOW}"/>'
+            + "".join(f'<rect x="{h * x}" y="{h * y}" width="{h * 0.05}" height="{h * 0.04}" fill="#78716c" '
+                      f'transform="rotate(30 {h * x} {h * y})"/>'
+                      for x, y in ((1.1, 0.7), (1.2, 0.8), (1.05, 0.58), (0.0, 0.8))))
+    return svg(w, h, body, "#efe6da")
+
+
 DRAW = dict(probe=probe, verdict=verdict, apartment=apartment, chipdown=chipdown, pill=pill, trophy=trophy,
-            tower=tower, jets=jets, gaza=gaza, thermo=thermo, bus=bus)
+            tower=tower, jets=jets, gaza=gaza, thermo=thermo, bus=bus, derrick=derrick, blast=blast)
