@@ -12,7 +12,7 @@ bounty "Sum up 24 November's world news in one image".
 Three drawn leads: China puts Shanghai's party chief Chen Jining under investigation; a US jury convicts Huawei of
 stealing trade secrets; and a Russian strike on a Zaporizhzhia apartment block kills two. Eight drawn cards follow,
 each with its key number in large type (Nvidia, Sanofi's $41bn deal, Senegal's AFCON title, Riyadh, a Korean
-air-raid alert, Gaza, England's record heat deaths, a UAE bus crash), then 32 more stories in a short list, a map,
+air-raid alert, Gaza, England's record heat deaths, a UAE bus crash), then 30 more stories in a short list, a map,
 region counts and a date check that names what was left out because it happened on another day.
 
 Each story carries a tag: CONFIRMED (two or more outlets), OFFICIAL (on the record), REPORTED (one outlet) or

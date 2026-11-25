@@ -23,9 +23,9 @@ SERIF = 'Cambria,"Times New Roman",serif'
 TAG_CLASS = {"CONFIRMED": "t-conf", "OFFICIAL": "t-off", "REPORTED": "t-rep", "CLAIM": "t-claim"}
 
 # layout knobs (a variant can override them through the VARIANT environment variable, as JSON)
-K = dict(lead_pic=90, card_pic=58, cards=8, card_cols=4, head_lead=24.5, head_card=19, brief_font=13.2,
-         briefs=32, brief_cols=3, dek_lead=13.4, dek_card=13, sub_size=19,
-         date_size=76, map=1, map_w=200, map_h=172)
+K = dict(lead_pic=90, card_pic=58, cards=8, card_cols=4, head_lead=24.5, head_card=19, brief_font=14.2,
+         briefs=30, brief_cols=3, dek_lead=13.4, dek_card=13, sub_size=19,
+         date_size=76, map=1, map_w=200, map_h=172, brief_num=0)
 K.update(json.loads(os.environ.get("VARIANT", "{}")))
 
 # What this variant shows: the first K['cards'] cards are drawn, the rest drop into the short list;
@@ -168,7 +168,8 @@ def brief_html(n, b):
     reg, place, text, t, _src = b  # numbered in page order, after the leads and cards
     col = REGIONS[reg][1]
     mark = ' <span class="tag t-claim">CLAIM</span>' if t == "CLAIM" else ""
-    return (f'<li><span class="bn" style="color:{col}">{n}</span><b style="color:{col}">{esc(place)}:</b> '
+    num = f'<span class="bn" style="color:{col}">{n}</span>' if K["brief_num"] else ""
+    return (f'<li>{num}<b style="color:{col}">{esc(place)}:</b> '
             f'{esc(text)}{mark}</li>')
 
 
